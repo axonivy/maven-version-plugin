@@ -1,3 +1,3 @@
-# Maven Plugins
+# Maven Version Plugin
 
-Helper maven plugins to build the Axon Ivy Platform 
+This Maven plugin is used to raise the versin in `pom.xml`, `MANIFEST.MF` and other OSGi artifacts.
