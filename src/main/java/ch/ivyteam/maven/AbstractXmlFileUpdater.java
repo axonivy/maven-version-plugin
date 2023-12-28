@@ -87,7 +87,14 @@ public class AbstractXmlFileUpdater {
   }
 
   protected boolean versionNeedsUpdate(Node node, String referenceVersion) {
-    return node != null && !node.getTextContent().trim().equals(referenceVersion.trim());
+    if (node == null) {
+      return false;
+    }
+    var version = node.getTextContent().trim();
+    if ("0.0.0".equals(version)) {
+      return false;
+    }
+    return !version.equals(referenceVersion.trim());
   }
 
   protected void replaceElementText(Node elementNode, String newNodeText) {
