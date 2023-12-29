@@ -18,7 +18,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 class TestSetMavenAndEclipseVersion {
 
-  private static final File POM_FILE = new File("testProject/pom.xml");
+  private static final Path REFERENCE_PROJECT = Path.of("src/test/projects/referenceProject");
 
   private InMemoryLog log;
   private SetMavenAndEclipseVersion testee = new SetMavenAndEclipseVersion();
@@ -79,37 +79,36 @@ class TestSetMavenAndEclipseVersion {
 
   private void compareFeature() throws IOException {
     var testeeManifest = Files.readString(tempDir.resolve("feature.xml"));
-    var referenceManifest = Files.readString(new File("src/test/projects/referenceProject/feature.xml").toPath());
+    var referenceManifest = Files.readString(REFERENCE_PROJECT.resolve("feature.xml"));
     assertThat(testeeManifest).isEqualTo(referenceManifest);
   }
 
   private void comparePom() throws IOException {
-    var testeeManifest = Files.readString(POM_FILE.toPath());
-    var referenceManifest = Files.readString(new File("src/test/projects/referenceProject/pom.xml").toPath());
+    var testeeManifest = Files.readString(tempDir.resolve("pom.xml"));
+    var referenceManifest = Files.readString(REFERENCE_PROJECT.resolve("pom.xml"));
     assertThat(testeeManifest).isEqualTo(referenceManifest);
   }
 
   private void compareManifest() throws IOException {
     var testeeManifest = Files.readString(tempDir.resolve("META-INF/MANIFEST.MF"));
-    var referenceManifest = Files.readString(new File("src/test/projects/referenceProject/META-INF/MANIFEST.MF").toPath());
+    var referenceManifest = Files.readString(REFERENCE_PROJECT.resolve("META-INF/MANIFEST.MF"));
     assertThat(testeeManifest).isEqualToIgnoringWhitespace(referenceManifest);
   }
 
   private void compareLog() throws IOException {
-    var referenceLog = Files.readAllLines(new File("src/test/projects/referenceProject/log.txt").toPath());
+    var referenceLog = Files.readAllLines(REFERENCE_PROJECT.resolve("log.txt"));
     var cleanedReferenceLog = new ArrayList<>();
     for (String line : referenceLog) {
-      line = StringUtils.replace(line, "C:\\dev\\maven-plugin\\maven-plugin\\testProject\\",
-              tempDir.toAbsolutePath() + "\\");
+      line = StringUtils.replace(line, "C:\\dev\\maven-plugin\\maven-plugin\\testProject\\", tempDir.toAbsolutePath() + "\\");
       line = StringUtils.replace(line, "\\", File.separator);
       cleanedReferenceLog.add(line);
     }
-    assertThat(log.log).containsOnly(cleanedReferenceLog.toArray(String[]::new));
+    assertThat(log.logs).containsOnly(cleanedReferenceLog.toArray(String[]::new));
   }
 
   private void compareProduct() throws IOException {
     var testeeProduct = Files.readString(tempDir.resolve("Designer.product"));
-    var referenceProduct = Files.readString(new File("src/test/projects/referenceProject/Designer.product").toPath());
+    var referenceProduct = Files.readString(REFERENCE_PROJECT.resolve("Designer.product"));
     assertThat(testeeProduct).isEqualTo(referenceProduct);
   }
 }

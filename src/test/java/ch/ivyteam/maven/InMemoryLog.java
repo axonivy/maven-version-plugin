@@ -7,7 +7,7 @@ import org.apache.maven.plugin.logging.Log;
 
 public class InMemoryLog implements Log {
 
-  public List<String> log = new ArrayList<>();
+  public List<String> logs = new ArrayList<>();
 
   @Override
   public void warn(CharSequence content, Throwable error) {}
@@ -46,7 +46,7 @@ public class InMemoryLog implements Log {
 
   @Override
   public void info(CharSequence content) {
-    log.add(content.toString());
+    logs.add(content.toString());
   }
 
   @Override

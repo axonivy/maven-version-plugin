@@ -19,6 +19,8 @@ import org.junit.jupiter.api.io.TempDir;
 
 class TestSetVersionOnNotReferencedProjects {
 
+  private static final Path REFERENCE_PROJECT = Path.of("src/test/projects/referenceIvy");
+
   private InMemoryLog log;
   private SetMavenAndEclipseVersion testee = new SetMavenAndEclipseVersion();
 
@@ -91,32 +93,31 @@ class TestSetVersionOnNotReferencedProjects {
   }
 
   private void comparePom(String relativePomPath) throws IOException {
-    String testeePom = Files.readString(tempDir.resolve(relativePomPath));
-    String referencePom = Files.readString(new File("src/test/projects/referenceIvy", relativePomPath).toPath());
+    var testeePom = Files.readString(tempDir.resolve(relativePomPath));
+    var referencePom = Files.readString(REFERENCE_PROJECT.resolve(relativePomPath));
     assertThat(testeePom).as("Content of '" + relativePomPath + "' is wrong").isEqualTo(referencePom);
   }
 
   private void compareFeature(String relativeFeatureXmlPath) throws IOException {
-    String testeeManifest = Files.readString(tempDir.resolve(relativeFeatureXmlPath));
-    String referenceManifest = Files.readString(new File("src/test/projects/referenceIvy", relativeFeatureXmlPath).toPath());
+    var testeeManifest = Files.readString(tempDir.resolve(relativeFeatureXmlPath));
+    var referenceManifest = Files.readString(REFERENCE_PROJECT.resolve(relativeFeatureXmlPath));
     assertThat(testeeManifest).isEqualTo(referenceManifest);
   }
 
   private void compareCategory(String relativeCategoryXmlPath) throws IOException {
-    String testeeCatInfo = Files.readString(tempDir.resolve(relativeCategoryXmlPath));
-    String referenceCatInfo = Files.readString(new File("src/test/projects/referenceIvy", relativeCategoryXmlPath).toPath());
+    var testeeCatInfo = Files.readString(tempDir.resolve(relativeCategoryXmlPath));
+    var referenceCatInfo = Files.readString(REFERENCE_PROJECT.resolve(relativeCategoryXmlPath));
     assertThat(testeeCatInfo).isEqualTo(referenceCatInfo);
   }
 
   private void compareLog() throws IOException {
-    List<String> referenceLog = Files.readAllLines(new File("src/test/projects/referenceIvy/log.txt").toPath());
-    List<String> cleanedReferenceLog = new ArrayList<>();
-    for (String line : referenceLog) {
-      line = StringUtils.replace(line, "C:\\dev\\maven-plugin\\maven-plugin\\testIvy\\",
-              testee.eclipseArtifactPoms[0].getDirectory() + "\\");
+    var referenceLog = Files.readAllLines(REFERENCE_PROJECT.resolve("log.txt"));
+    var cleanedReferenceLog = new ArrayList<>();
+    for (var line : referenceLog) {
+      line = StringUtils.replace(line, "C:\\dev\\maven-plugin\\maven-plugin\\testIvy\\", testee.eclipseArtifactPoms[0].getDirectory() + "\\");
       line = StringUtils.replace(line, "\\", File.separator);
       cleanedReferenceLog.add(line);
     }
-    assertThat(cleanedReferenceLog).containsOnly(log.log.toArray(new String[log.log.size()]));
+    assertThat(log.logs).containsOnly(cleanedReferenceLog.toArray(String[]::new));
   }
 }
