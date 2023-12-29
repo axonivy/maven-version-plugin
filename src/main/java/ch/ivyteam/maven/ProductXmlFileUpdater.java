@@ -1,13 +1,12 @@
 package ch.ivyteam.maven;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.maven.plugin.logging.Log;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -25,11 +24,17 @@ class ProductXmlFileUpdater extends AbstractXmlFileUpdater {
   }
 
   private static File getProductFile(File projectDirectory) {
-    File[] productFiles = projectDirectory.listFiles((FileFilter) new SuffixFileFilter(".product"));
-    if (productFiles == null || productFiles.length == 0) {
-      return new File("NoProductFileExists.product");
+    try {
+      var productFiles = Files.list(projectDirectory.toPath())
+              .filter(p -> p.toString().endsWith(".product"))
+              .toList();
+      if (productFiles.isEmpty()) {
+        return new File("NoProductFileExists.product");
+      }
+      return productFiles.get(0).toFile();
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
     }
-    return productFiles[0];
   }
 
   public void update() throws SAXException, IOException, XPathExpressionException {
