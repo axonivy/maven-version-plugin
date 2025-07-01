@@ -94,6 +94,9 @@ public class AbstractXmlFileUpdater {
     if ("0.0.0".equals(version)) {
       return false;
     }
+    if (version.startsWith("${")) {
+      return false;
+    }
     return !version.equals(referenceVersion.trim());
   }
 
