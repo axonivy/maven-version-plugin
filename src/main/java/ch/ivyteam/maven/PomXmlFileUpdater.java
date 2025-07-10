@@ -103,17 +103,17 @@ class PomXmlFileUpdater extends AbstractXmlFileUpdater {
   }
 
   private boolean updateIvyMajorVersionProperty(boolean changed) throws XPathExpressionException {
-    return updateVersion(changed, "/project/properties/ivy-major-version",
+    return updateVersion(changed, "/project/properties/ivy.version.major",
             Integer.toString(update.getArtifactVersion().getMajorVersion()));
   }
 
   private boolean updateIvyMinorVersionProperty(boolean changed) throws XPathExpressionException {
-    return updateVersion(changed, "/project/properties/ivy-minor-version",
+    return updateVersion(changed, "/project/properties/ivy.version.minor",
             Integer.toString(update.getArtifactVersion().getMinorVersion()));
   }
 
   private boolean updateIvyServiceVersionProperty(boolean changed) throws XPathExpressionException {
-    return updateVersion(changed, "/project/properties/ivy-service-version",
+    return updateVersion(changed, "/project/properties/ivy.version.patch",
             Integer.toString(update.getArtifactVersion().getIncrementalVersion()));
   }
 
