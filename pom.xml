@@ -10,7 +10,7 @@
 
   <groupId>ch.ivyteam.maven</groupId>
   <artifactId>maven-version-plugin</artifactId>
-  <version>11.0.0</version>
+  <version>11.0.1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <properties>
